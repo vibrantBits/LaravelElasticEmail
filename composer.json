@@ -17,12 +17,19 @@
     "email": "rdanusha@gmail.com"
   },
   "require": {
-    "laravel/framework": "5.4.x"
+    "laravel/framework": "^5.4.x"
   },
   "autoload": {
     "psr-4": {
       "Rdanusha\\LaravelElasticEmail\\": "src/"
     }
   },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "Rdanusha\\LaravelElasticEmail\\LaravelElasticEmailServiceProvider"
+        ]
+    }
+  }
   "minimum-stability": "stable"
 }
