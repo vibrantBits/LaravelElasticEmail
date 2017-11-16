@@ -30,6 +30,6 @@
             "Rdanusha\\LaravelElasticEmail\\LaravelElasticEmailServiceProvider"
         ]
     }
-  }
+  },
   "minimum-stability": "stable"
 }
