@@ -1,5 +1,5 @@
 {
-  "name": "rdanusha/laravel-elastic-email",
+  "name": "vibrant/laravel-elastic-email",
   "description": "Package for send emails with attachments via elastic email driver",
   "keywords": [
     "laravel",
