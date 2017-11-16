@@ -2,11 +2,14 @@
 
 namespace Rdanusha\LaravelElasticEmail;
 
+
+
 use GuzzleHttp\ClientInterface;
 use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Swift_Mime_SimpleMessage;
+use App\Library\Vibrant\ElasticEmail\Email;
 
 class ElasticTransport extends Transport
 {
@@ -60,12 +63,12 @@ class ElasticTransport extends Transport
      */
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
-
         $this->beforeSendPerformed($message);
 
+        $api_key = $this->key;
+
         $data = [
-            'api_key' => $this->key,
-            'account' => $this->account,
+
             'msgTo' => $this->getEmailAddresses($message),
             'msgCC' => $this->getEmailAddresses($message, 'getCc'),
             'msgBcc' => $this->getEmailAddresses($message, 'getBcc'),
@@ -77,45 +80,24 @@ class ElasticTransport extends Transport
             'subject' => $message->getSubject(),
             'body_html' => $message->getBody(),
             'body_text' => $this->getText($message),
-
         ];
 
-        $attachments = $message->getChildren();
-        $count = count($attachments);
-        if (is_array($attachments) && $count > 0) {
-            $data = $this->attach($attachments, $data);
-        }
-        $ch = curl_init();
-
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => $this->url,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_SSL_VERIFYPEER => false
-        ));
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        if ($count > 0) {
-            $this->deleteTempAttachmentFiles($data, $count);
-        }
+        $elasticEmail = new Email();
+        $result = $elasticEmail->sendEmail($api_key, $data);
 
         return $result;
     }
 
 
     /**
-     * Add attachments to post data array
+     * TODO: Add attachments to post data array
      * @param $attachments
      * @param $data
      * @return mixed
      */
     public function attach($attachments, $data)
     {
-        if (is_array($attachments) && count($attachments) > 0) {
+        /*if (is_array($attachments) && count($attachments) > 0) {
             $i = 1;
             foreach ($attachments AS $attachment) {
                 $attachedFile = $attachment->getBody();
@@ -130,7 +112,8 @@ class ElasticTransport extends Transport
             }
         }
 
-        return $data;
+        return $data;*/
+        return false;
     }
 
 
@@ -177,17 +160,19 @@ class ElasticTransport extends Transport
     }
 
     /**
-     * delete temp attachment files
+     * TODO delete temp attachment files
      * @param $data
      * @param $count
      */
     protected function deleteTempAttachmentFiles($data, $count)
     {
-        for ($i = 1; $i <= $count; $i++) {
+        /*for ($i = 1; $i <= $count; $i++) {
             $file = $data['file_' . $i]->name;
             if (File::exists($file)) {
                 File::delete($file);
             }
-        }
+        }*/
+
     }
 }
+
